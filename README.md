@@ -1,0 +1,1 @@
+A series of random algorithm challenges found online and solved. 
