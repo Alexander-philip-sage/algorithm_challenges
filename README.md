@@ -7,6 +7,7 @@ My linkedIn profile, is again another more convincing list of my technical skill
 	https://www.linkedin.com/in/alexanderpsage/
 
 # Challenges
+Note: The challenges listed in this description are likely a subset of all those solved in this repo. 
 
 ## Rock paper scissors 
 game with optional adaptation of nuke, cockroach, shoe
