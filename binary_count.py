@@ -2,11 +2,11 @@ challenge_prompt = ("""
 Challenge: 
     input: List[char]
             a list of single char strings and a binary number 
-            represented as 1s and 0s in a str. the char can be ? or +. 
-    algorithm: for every ? count the number of ones in the binary number. The len of the digits in the number must stay constant. 
-            It must run quickly. every + means add 1 to the number.
+            represented as 1s and 0s in a str. the char can be 'count' or 'add'. 
+    algorithm: for every 'count' count the number of ones in the binary number. The len of the digits in the number must stay constant. 
+            It must run quickly. every 'add' means add 1 to the number.
     return: List[int]
-            list of ints where each is a response to each ?. The length of the return list will be the same length as the number of ? 
+            list of ints where each is a response to each 'count'. The length of the return list will be the same length as the number of 'count'
             in the request list, not necessarily the same length of the request list""")
 print(challenge_prompt)
 import numpy as np
@@ -25,9 +25,9 @@ if __name__=="__main__":
                 bin_str[j] = '1'
         for j in range(request_size):
             if 0.5 < np.random.rand():
-                request.append('?')
+                request.append('count')
             else:
-                request.append('+')
+                request.append('add')
 
         solve_as_str(request, ''.join(bin_str))
 
