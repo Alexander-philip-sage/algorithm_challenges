@@ -1,7 +1,7 @@
 from typing import List
 import numpy as np
 import time
-
+##/home/sage/Documents/little_projects/pyplay/bin/python3 -m cProfile  -s tottime binary_count.py > binary_profile.txt
 
 ADD = 'ADD'
 COUNT = 'COUNT'
@@ -87,8 +87,8 @@ def solve_as_str(requests: List[str], bin_str: str, verbose=False) -> List[int]:
     return ret
 
 def random_data():
-    request_size = np.random.randint(1,100)
-    binary_size =  np.random.randint(1,100)
+    request_size = np.random.randint(1,1000)
+    binary_size =  np.random.randint(1,1000)
     requests = []
     bits = ['0' for x in range(binary_size)]
     for j in range(binary_size):
@@ -104,7 +104,7 @@ def random_data():
 
 if __name__=="__main__":
     test_dataset = []
-    for i in range(50):
+    for i in range(100):
         test_dataset.append( random_data())
     start = time.perf_counter()
     for requests, bin_str in test_dataset:
