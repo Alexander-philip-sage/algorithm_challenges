@@ -12,9 +12,14 @@ Input : mat[4][4] = [ [4, 2, 3, 4],
 Output :120
 path : 4 + 9 + 15 + 92 = 120'''
 test_cases = [([ [4, 2, 3, 4],
-                      [2, 9, 1, 10],
-                      [15, 1, 3, 0],
-                      [16, 92, 41, 44] ],120)]
+                [2, 9, 1, 10],
+                [15, 1, 3, 0],
+                [16, 92, 41, 44] ],120),
+            ([ [0, 0, 0, 0],
+                [0, 1, 2, 3],
+                [0, 2, 3, 4],
+                [100, 0, 1, 2] ],104),
+            ]
 
 def longest_path(mat):
     paths = []
@@ -66,5 +71,38 @@ def step(mat, path,N, row, col):
     best_path = paths[distances.index(best_dist)]
     return best_dist, best_path
 
+##internet copied solution
+def MaximumPath(Mat):
+    N = len(Mat)
+    result = 0
+ 
+    # create 2D matrix to store the sum
+    # of the path
+    # initialize all dp matrix as '0'
+    dp = [[0 for i in range(N+2)] for j in range(N)]
+ 
+    # copy all element of first row into
+    # dp first row
+    for i in range(N):
+        for j in range(1, N+1):
+            dp[i][j] = max( dp[i-1][j-1],
+                           max(dp[i-1][j],dp[i-1][j+1]) 
+                           ) + Mat[i][j-1]
+ 
+    # Find maximum path sum that end ups
+    # at any column of last row 'N-1'
+    for i in range(N+1):
+        result = max(result, dp[N-1][i])
+
+    # return maximum sum path
+    return result
+ 
+
+
 for test in test_cases:
+    print("my solution")
     print(longest_path(test[0]))
+    print("internet solution")
+    MaximumPath(test[0])
+    print("answer", test[1])
+    print()
