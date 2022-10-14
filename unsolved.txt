@@ -1,0 +1,21 @@
+You must create a function that can read matrix of numbers stored in an array which will be a 2D matrix that contains only the integers 1, 0, or 2. Then from the position in the matrix where a 1 is, return the number of spaces either left, right, down, or up you must move to reach an enemy which is represented by a 2
+You are able to wrap around one side of the matrix to the other. For example if array is [“0000”, “1000”, “0002”, “0002”] then this is the board
+For this board your program should return 2 because the closest enemy (2) is 2 spaces away from the 1 by moving left to wrap to the other side and then moving down once. The array will contain any number of 0’s and 2’s, but only a single 1. It may not contain any 2’s at all as well, where in that case your program should return a 0.
+Input: [“000”, “100”, “200”] | Output: 1
+Input: [“0000”, “2010”, “0000”, “2002” ] | Output: 2
+
+
+Vowel Square Have the function VowelSquare(strArr) take the strArr parameter being passed which will be a 2D matrix of some arbitrary size filled with letters from the alphabet, and determine if a 2x2 square composed entirely of vowels exists in the matrix. For example: strArr is ["abcd", "eikr", "oufj"] then this matrix looks like the following:
+a b c d
+
+e i k r
+
+o u f j
+Within this matrix there is a 2x2 square of vowels starting in the second row and first column, namely, ei, ou. If a 2x2 square of vowels is found your program should return the top-left position (row-column) of the square, so for this example your program should return 1-0. If no 2x2 square of vowels exists, then return the string not found. If there are multiple squares of vowels, return the one that is at the most top-left position in the whole matrix. The input matrix will at least be of size 2x2.
+
+Examples:
+
+Input: ["aqrst", "ukaei", "ffooo"]
+Output: 1-2,
+Input: ["gg", "ff"]
+Output: not found
