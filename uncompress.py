@@ -27,7 +27,7 @@ Input is always valid, so no need to check its validity'''
 
 
 def mydecompress(pattern):
-    print("input",pattern)
+    #print("input",pattern)
     decomp = ''
     digit_str = ''
     subpat = ''
@@ -46,7 +46,10 @@ def mydecompress(pattern):
             if left==1:
                 left_ind=ind
         if letter.isalpha():
-            subpat += letter
+            if left==0:
+                decomp+=letter
+            else:
+                subpat += letter
         if letter==']':
             right+=1
             if left==right:
@@ -64,7 +67,8 @@ def mydecompress(pattern):
 
     return decomp+subpat
 
-test_cases = [('3[abc]4[ab]c','abcabcabcababababc'), ('2[3[a]b]','aaabaaab'), ('10[a]','aaaaaaaaaa')]
+test_cases = [('3[abc]4[ab]c','abcabcabcababababc'), ('2[3[a]b]','aaabaaab'), ('10[a]','aaaaaaaaaa'),
+            ('c4[a]','caaaa'), ('c2[a]c2[a]','caacaa')]
 for test in test_cases:
     print()
     resp = mydecompress(test[0])
