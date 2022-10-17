@@ -32,14 +32,14 @@ def merge_sort(var):
 
 
 import numpy as np
-ct_tests = 20
+ct_tests = 100
 for i in range(ct_tests):
     test = list(np.random.randint(-10,10,7))
     #test = [0, 7, 2, 4, 8, 0, 5]
     answer = test.copy()
     answer.sort()
-    print("input", test)
-    print("answer", answer)
+    #print("input", test)
+    #print("answer", answer)
     resp = merge_sort(test)
     if resp==answer:
         print("test", i, "correct")
