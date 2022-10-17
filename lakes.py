@@ -2,12 +2,9 @@
 
 Given an array of positive integers representing 2-D bar heights, design an algorithm (or write a function) that can compute the total volume (capacity) of water that could be held in all lakes on such an island given an array of the heights of the bars. Assume an elevation map where the width of each bar is 1.
 
-Example: Given [1,3,2,4,1,3,1,4,5,2,2,1,4,2,2], return 15 (3 bodies of water with volumes of 1,7,7 yields total volume of 15)'''
+Example: Given [1,3,2,4,1,3,1,4,5,2,2,1,4,2,2], return 15 (3 bodies of water with volumes of 1,7,7 yields total volume of 15)
+https://techdevguide.withgoogle.com/resources/former-interview-question-volume-of-lakes/#!'''
 
-class Lake():
-    def __init__(self,height, index):
-        self.height = height
-        self.index = index
 
 def calculate_lakes(topography):
     lakes = []
@@ -46,13 +43,30 @@ def calculate_lakes(topography):
 
     volume = 0
     for lake in lakes:
-        print(lake)
+        #print(lake)
         max_height = lake[0][0] if lake[0][0]<lake[-1][0] else lake[-1][0] 
         if max_height>0:
             for bar in lake:
                 if bar[0] <max_height:
                     volume+= max_height-bar[0] 
     return volume
+
+
+def trap(height):
+    '''copied from google sol'''
+    left_index, right_index = 0, len(height) - 1
+    left_max, right_max = 0, 0
+    output = 0
+    while left_index < right_index:
+        if height[left_index] <= height[right_index]:
+            left_max = max(left_max, height[left_index])
+            output += max(0, left_max - height[left_index])
+            left_index += 1
+        else:
+            right_max = max(right_max, height[right_index])
+            output += max(0, right_max - height[right_index])
+            right_index -= 1
+    return output
 
 
 test_cases = [([1,3,2,4,1,3,1,4,5,2,2,1,4,2,2],15), ([2,10,4,2,1],0), ([-1,-3,-1], 0),
@@ -65,13 +79,14 @@ test_cases = [([1,3,2,4,1,3,1,4,5,2,2,1,4,2,2],15), ([2,10,4,2,1],0), ([-1,-3,-1
                 ([1,2,2,2,1,2],1),
                 ([1,3,1,2,1,1],1),
                 ([1,3,1,2,1,3],5),
-                ([1,5,4,1,4,2,1,2],4),]
+                ([1,5,4,1,4,2,1,2],4),
+                ([1,-1,1],2),
+                ([1,-1,1,-2,-3,-2,1],12),]
 
 
 
 for test in test_cases:
-    print()
-    print(test[0])
+
     resp = calculate_lakes(test[0])
     if test[1]==resp:
         print("correct")
@@ -80,4 +95,14 @@ for test in test_cases:
         print('wrong')
         print("ans",test[1])
         print("mine",resp)
+        print("----------")
+
+
+    resp = trap(test[0])
+    if test[1]!=resp:
+        print("----------")
+        print('google sol wrong')
+        print("problem",test[0])
+        print("ans",test[1])
+        print("calc",resp)
         print("----------")
