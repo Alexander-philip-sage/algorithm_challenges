@@ -4,22 +4,30 @@
 #include <iostream>
 #include "SageThird.h"
 #include <vector>
+#include <algorithm>
 
-void insertionSort(int array[], int size) 
+bool comparePoints(const Point x, const Point y){ return x.rank < y.rank;}
+void insertionSort(std::vector<Point>& arr) 
 {
-    for (int step = 1; step < size; step++) 
+    if (arr.size() < 2) { 
+        std::cout << "error insertionSort. array too small to sort. arr.size() " <<arr.size() << std::endl;
+        return;
+    }
+    //copying a lot of Point values
+    for (int step = 1; step < arr.size(); step++)
     {
-        int key = array[step];
+        Point key = arr[step];
         int j = step - 1;
 
         // Compare key with each element on the left of it until an element smaller than
         // it is found.
-        // For descending order, change key<array[j] to key>array[j].
-        while (key < array[j] && j >= 0) {
-            array[j + 1] = array[j];
+        // For descending order, change key<arr[j] to key>arr[j].
+        while ((j >= 0)&&(key.rank < arr[j].rank))
+        {
+            arr[j + 1] = arr[j];
             --j;
         }
-        array[j + 1] = key;
+        arr[j + 1] = key;
     }
 }
 
@@ -30,15 +38,6 @@ void print_point(const Point* tmp) {
     std::cout << "y:" << tmp->y<< std::endl;
 }
 
-void print_create(const Point* points_begin, const Point* points_end)
-{
-    
-    std::cout << "points_begin ";
-    print_point(points_begin);
-    std::cout << "points_end ";
-    print_point(points_end);
-
-}
 SearchContext* create(const Point* points_begin, const Point* points_end)
 {
     SearchContext* sc = new SearchContext;
@@ -58,16 +57,27 @@ int32_t search(SearchContext* sc, const Rect rect, const int32_t count, Point* o
         if ((pt->x > rect.lx) && (pt->x < rect.hx) && (pt->y > rect.ly) && (pt->y < rect.hy)&&(found < count)) 
         {
             //copy value - slow
-            ++found;
             in_border.push_back(*pt);
+            ++found;
         }
     }
+    std::sort(in_border.begin(), in_border.end(), comparePoints); 
+    //insertionSort(in_border);
     for (int i =0;i<count; i++)
     {
         out_points[i] = in_border[i];
     }
     //out_points = sort(in_border)
     return count;
+}
+SearchContext* destroy(SearchContext* sc)
+{
+    if (sc)
+    {
+        delete sc;
+    }
+
+    return nullptr;
 }
 
 

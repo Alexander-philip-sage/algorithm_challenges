@@ -12,15 +12,13 @@ int main()
     const Rect border = { 2,2,6,6 };
     for (int  i = 0; i < N; i++) {
         all_points[i].id = i;
-        all_points[i].rank = i;
+        all_points[i].rank = N-i;
         all_points[i].y = i;
         all_points[i].x = i;
     }
     const Point* points_begin = all_points;
     const Point* points_end = all_points+N-1;
-    std::cout << all_points[4].id << "  ";
     SearchContext* sc = create(points_begin, points_end);
-    print_create(sc->points_begin, sc->points_end);
     int32_t res = search(sc, border, count, out_points);
     if (res != count) {
         std::cout << "error in search" << std::endl;
