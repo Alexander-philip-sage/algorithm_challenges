@@ -2,6 +2,40 @@
 #include <utility>
 #include <limits.h>
 #include "SageFirst.h"
+#include <iostream>
+
+struct SearchContext
+{
+    const Point* points_begin; const Point* points_end;
+};
+/* Load the provided points into an internal data structure. The pointers follow the STL iterator convention, where
+"points_begin" points to the first element, and "points_end" points to one past the last element. The input points are
+only guaranteed to be valid for the duration of the call. Return a pointer to the context that can be used for
+consecutive searches on the data. */
+extern "C" SAGEFIRST_API SearchContext* __stdcall  create(
+    const Point* points_begin, const Point* points_end)
+{
+    SearchContext* sc = new SearchContext();
+    sc->points_begin = points_begin;
+    sc->points_end = points_end;
+    return sc;
+}
+void print_create(const Point* points_begin, const Point* points_end)
+{
+    SearchContext* sc = new SearchContext();
+    sc->points_begin = points_begin;
+    sc->points_end = points_end;
+    std::cout << "sc->points_begin  rank:"<< sc->points_begin->rank << std::endl;
+}
+/* Search for "count" points with the smallest ranks inside "rect" and copy them ordered by smallest rank first in
+"out_points". Return the number of points copied. "out_points" points to a buffer owned by the caller that
+can hold "count" number of Points.*/
+extern "C" SAGEFIRST_API  int32_t __stdcall search(SearchContext * sc, const Rect * rect, const int32_t count, Point * out_points);
+
+/* Release the resources associated with the context. Return nullptr if successful, "sc" otherwise. */
+extern "C" SAGEFIRST_API  SearchContext * __stdcall destroy(SearchContext * sc);
+
+
 
 // DLL internal state variables:
 static unsigned long long previous_;  // Previous value, if any

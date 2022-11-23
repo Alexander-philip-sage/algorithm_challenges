@@ -6,18 +6,34 @@
 #define SAGEFIRST_API __declspec(dllimport)
 #endif
 
-// The Fibonacci recurrence relation describes a sequence F
-// where F(n) is { n = 0, a
-//               { n = 1, b
-//               { n > 1, F(n-2) + F(n-1)
-// for some initial integral values a and b.
-// If the sequence is initialized F(0) = 1, F(1) = 1,
-// then this relation produces the well-known Fibonacci
-// sequence: 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
+#include <stdint.h>
 
-// Initialize a Fibonacci relation sequence
-// such that F(0) = a, F(1) = b.
-// This function must be called before any other function.
+/* The following structs are packed with no padding. */
+#pragma pack(push, 1)
+
+/* Defines a point in 2D space with some additional attributes like id and rank. */
+struct Point
+{
+	int8_t id;
+	int32_t rank;
+	float x;
+	float y;
+};
+
+/* Defines a rectangle, where a point (x,y) is inside, if x is in [lx, hx] and y is in [ly, hy]. */
+struct Rect
+{
+	float lx;
+	float ly;
+	float hx;
+	float hy;
+};
+#pragma pack(pop)
+
+/* Declaration of the struct that is used as the context for the calls. */
+struct SearchContext;
+
+
 extern "C" SAGEFIRST_API void fibonacci_init(
     const unsigned long long a, const unsigned long long b);
 
@@ -31,3 +47,5 @@ extern "C" SAGEFIRST_API unsigned long long fibonacci_current();
 
 // Get the position of the current value in the sequence.
 extern "C" SAGEFIRST_API unsigned fibonacci_index();
+
+extern "C" SAGEFIRST_API void print_create(const Point * points_begin, const Point * points_end);
