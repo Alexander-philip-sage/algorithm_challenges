@@ -1,14 +1,14 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
-#include "pch.h"
+#include "point_search.h"
 #include "QuadTree.h"
 
 #define EXPORT extern "C" _declspec(dllexport)
 
 struct SearchContext
 {
-    QuadTree* tree;
+  QuadTree* tree;
 };
 
 /* Load the provided points into an internal data structure. The pointers follow the STL iterator convention, where
@@ -17,13 +17,13 @@ only guaranteed to be valid for the duration of the call. Return a pointer to th
 consecutive searches on the data. */
 EXPORT SearchContext* __stdcall create(const Point* points_begin, const Point* points_end)
 {
-    if (points_begin == nullptr || points_end == nullptr)
-        return nullptr;
+  if (points_begin == nullptr || points_end == nullptr) 
+    return nullptr;
+  
+  SearchContext* newContext = new SearchContext();
+  newContext->tree = new QuadTree(points_begin, points_end);
 
-    SearchContext* newContext = new SearchContext();
-    newContext->tree = new QuadTree(points_begin, points_end);
-
-    return newContext;
+  return newContext;
 }
 
 /* Search for "count" points with the smallest ranks inside "rect" and copy them ordered by smallest rank first in
@@ -31,22 +31,22 @@ EXPORT SearchContext* __stdcall create(const Point* points_begin, const Point* p
 can hold "count" number of Points. */
 EXPORT int32_t __stdcall search(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
 {
-    // The provided header is wrong!  rect is passed as a pointer, not by value!
+  // The provided header is wrong!  rect is passed as a pointer, not by value!
 
-    if (sc == nullptr)
-        return 0;
+  if (sc == nullptr)
+    return 0;
 
-    return sc->tree->Search(rect, count, out_points);
+  return sc->tree->Search(rect, count, out_points);
 }
 
 /* Release the resources associated with the context. Return nullptr if successful, "sc" otherwise. */
 EXPORT SearchContext* __stdcall destroy(SearchContext* sc)
 {
-    if (sc)
-    {
-        delete sc->tree;
-        delete sc;
-    }
+  if (sc)
+  {
+    delete sc->tree;
+    delete sc;
+  }
 
-    return nullptr;
+  return nullptr;
 }
