@@ -1,0 +1,14 @@
+TO READ 
+https://www.youtube.com/watch?v=Abbpd-ONSbU
+
+ALREADY READ
+fixed width types
+https://www.learncpp.com/cpp-tutorial/fixed-width-integers-and-size-t/
+Microsoft: Link an executable to a DLL
+https://learn.microsoft.com/en-us/cpp/build/linking-an-executable-to-a-dll?view=msvc-170#linking-explicitly
+baeldung: Finding the K Smallest Numbers in an Array
+https://www.baeldung.com/cs/k-smallest-numbers-array
+codeguru: DLL Tutorial For Beginners
+https://www.codeguru.com/cplusplus/dll-tutorial-for-beginners/
+Microsoft: Walkthrough: Create and use your own Dynamic Link Library (C++)
+https://learn.microsoft.com/en-us/cpp/build/walkthrough-creating-and-using-a-dynamic-link-library-cpp?view=msvc-170
