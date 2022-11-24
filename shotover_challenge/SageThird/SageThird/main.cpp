@@ -19,7 +19,7 @@ int main()
     const Point* points_begin = all_points;
     const Point* points_end = all_points+N-1;
     SearchContext* sc = create(points_begin, points_end);
-    int32_t res = search(sc, border, count, out_points);
+    int32_t res = search_slow(sc, border, count, out_points);
     if (res != count) {
         std::cout << "error in search" << std::endl;
     }

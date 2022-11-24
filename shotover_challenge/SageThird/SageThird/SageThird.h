@@ -40,3 +40,4 @@ int32_t search(SearchContext* sc, const Rect rect, const int32_t count, Point* o
 bool comparePoints(const Point x, const Point y);
 void insertionSort(std::vector<Point>& arr);
 SearchContext* destroy(SearchContext* sc);
+int32_t search_slow(SearchContext* sc, const Rect rect, const int32_t count, Point* out_points);

@@ -70,6 +70,32 @@ int32_t search(SearchContext* sc, const Rect rect, const int32_t count, Point* o
     //out_points = sort(in_border)
     return count;
 }
+
+int32_t search_slow(SearchContext* sc, const Rect rect, const int32_t count, Point* out_points)
+{
+    //written to measure against. intentionally slow.
+    std::vector<Point> all_points;
+    for (auto pt = sc->points_begin; pt < sc->points_end; pt++) {
+        all_points.push_back(*pt);
+    }
+    int32_t found = 0;
+    std::sort(all_points.begin(), all_points.end(), comparePoints);
+    for (auto pt : all_points) {
+        if ((pt.x > rect.lx) && (pt.x < rect.hx) && (pt.y > rect.ly) && (pt.y < rect.hy) && (found < count))
+        {
+            //copy value - slow
+            out_points[found] = pt;
+            ++found;
+            if (found == count) {
+                break;
+            }
+        }
+    }
+    //std::sort(in_border.begin(), in_border.end(), comparePoints);
+    //insertionSort(in_border);
+    return count;
+}
+
 SearchContext* destroy(SearchContext* sc)
 {
     if (sc)
