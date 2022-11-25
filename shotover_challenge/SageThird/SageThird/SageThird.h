@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include <limits.h>
 /* The following structs are packed with no padding. */
 #pragma pack(push, 1)
 
@@ -30,6 +31,74 @@ struct SearchContext
 	const Point* points_begin;
 	const Point* points_end;
 };
+
+class Node {
+public:
+	Point pt;
+	Node* next;
+	Node* prev;
+	Node(const Point&);
+};
+class sortedLinkedList {
+private:
+	int size=0;
+	Node* access;
+	Node* head;
+	int max_rank = INT_MIN;
+public:
+	sortedLinkedList(int);
+	bool insert(const Point&);
+	Node* get_access();
+	Node* get_head();
+};
+sortedLinkedList::sortedLinkedList(int s) {
+	size = s;
+}
+sortedLinkedLIst::insert(const Point& pt) {
+	if (size == 0)
+	{
+		head = new Node(pt);
+		access = head;
+		size++;
+		max_rank = pt.rank;
+	}
+	else {
+		//insertsort
+	}
+}
+Node::Node(const Point& point) {
+	pt=point;
+}
+/* function to insert a new_node
+in a list. Note that this
+function expects a pointer to
+head_ref as this can modify the
+head of the input linked list
+(similar to push())*/
+void sortedInsert(Node** head_ref,
+	Node* new_node)
+{
+	Node* current;
+	/* Special case for the head end */
+	if (*head_ref == NULL
+		|| (*head_ref)->data
+		>= new_node->data) {
+		new_node->next = *head_ref;
+		*head_ref = new_node;
+	}
+	else {
+		/* Locate the node before the
+ point of insertion */
+		current = *head_ref;
+		while (current->next != NULL
+			&& current->next->data
+			< new_node->data) {
+			current = current->next;
+		}
+		new_node->next = current->next;
+		current->next = new_node;
+	}
+}
 
 void print_point(const Point* tmp);
 SearchContext* create(const Point* points_begin, const Point* points_end);
