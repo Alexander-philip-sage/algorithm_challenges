@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdint.h>
 #include "SageThird.h"
+#include "BST.h"
 #include <ctime>
 
 #include <cstdlib>
@@ -25,12 +26,12 @@ void random_points(Point all_points[], const int32_t N)
 }
 int main()
 {
-    const int32_t N = 10000;
+    const int32_t N = 10;
     Point all_points[N];
-    const int32_t count = 10;
+    const int32_t count = 3;
     Point out_points[count];
     const Rect border = { 2,2,6,6 };
-    random_points(all_points, N);
+    orderly_points(all_points, N);
     const Point* points_begin = all_points;
     const Point* points_end = all_points+N-1;
     SearchContext* sc = create_i(points_begin, points_end);

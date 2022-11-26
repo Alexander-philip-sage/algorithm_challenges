@@ -5,8 +5,8 @@
 #include "SageThird.h"
 #include <vector>
 #include <algorithm>
-
-bool comparePoints(const Point x, const Point y){ return x.rank < y.rank;}
+#include "BST.h"
+bool comparePoints(const Point x, const Point y){ return x.rank <= y.rank;}
 void insertionSort(std::vector<Point>& arr) 
 {
     if (arr.size() < 2) { 
@@ -46,19 +46,21 @@ SearchContext* create_i(const Point* points_begin, const Point* points_end)
     return sc;
 }
 
-int32_t search_i(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
+int32_t search_vector(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
 {
+    //O(N + Wlog(W) + M)
+    //N = total number of points
+    //W = number of points inside small square
+    //M = count
     std::vector<Point> in_border;
     //std::vector<Point*> in_border;
     //Point* in_border = new Point[count];
     //Point** in_border = new Point*[count];
-    int32_t found=0;
     for (auto pt = sc->points_begin; pt < sc->points_end; pt++) {
-        if ((pt->x > rect->lx) && (pt->x < rect->hx) && (pt->y > rect->ly) && (pt->y < rect->hy) && (found < count))
+        if ((pt->x > rect->lx) && (pt->x < rect->hx) && (pt->y > rect->ly) && (pt->y < rect->hy))
         {
             //copy value - slow
             in_border.push_back(*pt);
-            ++found;
         }
     }
     if (in_border.size() == 0) { return (int32_t)0; }
@@ -75,9 +77,39 @@ int32_t search_i(SearchContext* sc, const Rect* rect, const int32_t count, Point
     }
 }
 
+int32_t search_i(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
+{
+    //second idea. using a map to remove the sort at the end
+    //I think its O(N + log(W) + M)
+    bst::Tree* in_border=NULL;
+    int32_t found = 0;
+    for (auto pt = sc->points_begin; pt < sc->points_end; pt++) {
+        if ((pt->x > rect->lx) && (pt->x < rect->hx) && (pt->y > rect->ly) && (pt->y < rect->hy))
+        {
+            //copy value - slow
+            if (found == 0) {
+                in_border = bst::newTreeNode(pt);
+            }
+            else {
+                bst::insertTreeNode(in_border, pt);
+            }
+            ++found;
+        }
+    }
+    if (found == 0) { return (int32_t)0; }
+    int32_t to_copy = 0;
+    if (found < count) {to_copy = (int32_t)found; }
+    else { to_copy = count; }
+    std::map<Point*, int32_t>::iterator itr;
+    int32_t i=0;
+    TreeToArray(in_border, out_points, to_copy);
+    return to_copy;
+}
+
 int32_t search_slow(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
 {
     //written to measure against. intentionally slow.
+    //sorts all N before checking which points are in the square. O(NlogN + M)
     std::vector<Point> all_points;
     for (auto pt = sc->points_begin; pt < sc->points_end; pt++) {
         all_points.push_back(*pt);
@@ -85,7 +117,7 @@ int32_t search_slow(SearchContext* sc, const Rect* rect, const int32_t count, Po
     int32_t found = 0;
     std::sort(all_points.begin(), all_points.end(), comparePoints);
     for (auto pt : all_points) {
-        if ((pt.x > rect->lx) && (pt.x < rect->hx) && (pt.y > rect->ly) && (pt.y < rect->hy) && (found < count))
+        if ((pt.x > rect->lx) && (pt.x < rect->hx) && (pt.y > rect->ly) && (pt.y < rect->hy))
         {
             //copy value - slow
             out_points[found] = pt;

@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 #include <vector>
+#include <map>
+#include <iterator>
 /* The following structs are packed with no padding. */
 #pragma pack(push, 1)
 
