@@ -42,8 +42,10 @@ public:
 class sortedLinkedList {
 private:
 	int size=0;
+	int max_size = 0;
 	Node* access;
 	Node* head;
+	Node* tail;
 	int max_rank = INT_MIN;
 public:
 	sortedLinkedList(int);
@@ -51,19 +53,32 @@ public:
 	Node* get_access();
 	Node* get_head();
 };
-sortedLinkedList::sortedLinkedList(int s) {
+sortedLinkedList::sortedLinkedList(int s, int ms) {
 	size = s;
+	max_size = ms;
 }
-sortedLinkedLIst::insert(const Point& pt) {
+void sortedLinkedLIst::insert(const Point& pt) {
 	if (size == 0)
 	{
 		head = new Node(pt);
 		access = head;
+		tail = head;
 		size++;
 		max_rank = pt.rank;
 	}
 	else {
-		//insertsort
+		Node* current;
+		if ((size < max_size)||(pt.rank < max_rank)) {
+			current = head;
+			size++;
+		}
+		
+		if (size > max_size) {
+			//linked list is too big, remove last one
+			Node* ptrm =  tail;
+			tail = tail->prev;
+			delete ptrm;
+		}
 	}
 }
 Node::Node(const Point& point) {
