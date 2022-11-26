@@ -8,7 +8,7 @@
 /* Defines a point in 2D space with some additional attributes like id and rank. */
 struct Point
 {
-	int id;
+	int8_t id;
 	int32_t rank;
 	float x;
 	float y;
@@ -32,12 +32,12 @@ struct SearchContext
 };
 
 void print_point(const Point* tmp);
-SearchContext* create(const Point* points_begin, const Point* points_end);
+SearchContext* create_i(const Point* points_begin, const Point* points_end);
 /* Search for "count" points with the smallest ranks inside "rect" and copy them ordered by smallest rank first in
 "out_points". Return the number of points copied. "out_points" points to a buffer owned by the caller that
 can hold "count" number of Points. */
-int32_t search(SearchContext* sc, const Rect rect, const int32_t count, Point* out_points);
+int32_t search_i(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points);
 bool comparePoints(const Point x, const Point y);
 void insertionSort(std::vector<Point>& arr);
-SearchContext* destroy(SearchContext* sc);
-int32_t search_slow(SearchContext* sc, const Rect rect, const int32_t count, Point* out_points);
+SearchContext* destroy_i(SearchContext* sc);
+int32_t search_slow(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points);

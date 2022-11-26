@@ -32,13 +32,13 @@ void insertionSort(std::vector<Point>& arr)
 }
 
 void print_point(const Point* tmp) {
-    std::cout <<"rank:" << tmp->rank << "\t";
-    std::cout << "id:" << tmp->id << std::endl;
-    std::cout << "x:" << tmp->x<<"\t";
-    std::cout << "y:" << tmp->y<< std::endl;
+    std::cout <<"rank:" << (int)tmp->rank << "\t";
+    std::cout << "id:" << (int)tmp->id << std::endl;
+    std::cout << "x:" << (float)tmp->x<<"\t";
+    std::cout << "y:" << (float)tmp->y<< std::endl;
 }
 
-SearchContext* create(const Point* points_begin, const Point* points_end)
+SearchContext* create_i(const Point* points_begin, const Point* points_end)
 {
     SearchContext* sc = new SearchContext;
     sc->points_begin = points_begin;
@@ -46,7 +46,7 @@ SearchContext* create(const Point* points_begin, const Point* points_end)
     return sc;
 }
 
-int32_t search(SearchContext* sc, const Rect rect, const int32_t count, Point* out_points)
+int32_t search_i(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
 {
     std::vector<Point> in_border;
     //std::vector<Point*> in_border;
@@ -54,24 +54,28 @@ int32_t search(SearchContext* sc, const Rect rect, const int32_t count, Point* o
     //Point** in_border = new Point*[count];
     int32_t found=0;
     for (auto pt = sc->points_begin; pt < sc->points_end; pt++) {
-        if ((pt->x > rect.lx) && (pt->x < rect.hx) && (pt->y > rect.ly) && (pt->y < rect.hy)&&(found < count)) 
+        if ((pt->x > rect->lx) && (pt->x < rect->hx) && (pt->y > rect->ly) && (pt->y < rect->hy) && (found < count))
         {
             //copy value - slow
             in_border.push_back(*pt);
             ++found;
         }
     }
-    std::sort(in_border.begin(), in_border.end(), comparePoints); 
+    if (in_border.size() == 0) { return (int32_t)0; }
+    std::sort(in_border.begin(), in_border.end(), comparePoints);
     //insertionSort(in_border);
-    for (int i =0;i<count; i++)
+    if (in_border.size() < count)
     {
-        out_points[i] = in_border[i];
+        for (int i = 0; i < in_border.size(); i++) { out_points[i] = in_border[i]; }
+        return (int32_t)in_border.size();
     }
-    //out_points = sort(in_border)
-    return count;
+    else {
+        for (int i = 0; i < count; i++) { out_points[i] = in_border[i]; }
+        return count;
+    }
 }
 
-int32_t search_slow(SearchContext* sc, const Rect rect, const int32_t count, Point* out_points)
+int32_t search_slow(SearchContext* sc, const Rect* rect, const int32_t count, Point* out_points)
 {
     //written to measure against. intentionally slow.
     std::vector<Point> all_points;
@@ -81,7 +85,7 @@ int32_t search_slow(SearchContext* sc, const Rect rect, const int32_t count, Poi
     int32_t found = 0;
     std::sort(all_points.begin(), all_points.end(), comparePoints);
     for (auto pt : all_points) {
-        if ((pt.x > rect.lx) && (pt.x < rect.hx) && (pt.y > rect.ly) && (pt.y < rect.hy) && (found < count))
+        if ((pt.x > rect->lx) && (pt.x < rect->hx) && (pt.y > rect->ly) && (pt.y < rect->hy) && (found < count))
         {
             //copy value - slow
             out_points[found] = pt;
@@ -96,7 +100,7 @@ int32_t search_slow(SearchContext* sc, const Rect rect, const int32_t count, Poi
     return count;
 }
 
-SearchContext* destroy(SearchContext* sc)
+SearchContext* destroy_i(SearchContext* sc)
 {
     if (sc)
     {
