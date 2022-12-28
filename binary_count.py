@@ -28,7 +28,11 @@ def count_ones_loop(bin_str: str) -> int:
 def count_ones_method(bin_str: str) -> int:
     return bin_str.count('1')
 
-def add_str(bin_str: str, verbose: bool):
+def add_str(bin_str: str, verbose: bool = False):
+    '''bin_str: a string of values 0 or 1 representing a binary number
+    add one using python slow for loops and custom built functions'''
+    if not bin_str:
+        return bin_str    
     bits = list(bin_str)
     if verbose:
         print("add")
@@ -43,14 +47,17 @@ def add_str(bin_str: str, verbose: bool):
             break
         else:
             raise ValueError("only allows values 0 or 1 in binary")
-    if not set_one:
-        bits[-1] = '1'
+
     bin_str = ''.join(bits)
     if verbose:
         print(bin_str, "\n")
     return bin_str
 
 def add_bin(bin_str: str, verbose: bool, modu: int, len_str: int):
+    '''bin_str: a string of values 0 or 1 representing a binary number
+    add one using python built in functions'''
+    if not bin_str:
+        return bin_str
     dec = int(bin_str, 2)
     if verbose:
         print("add")
@@ -97,6 +104,7 @@ def solve_as_str(requests: List[str], bin_str: str, verbose=False) -> List[int]:
     return ret
 
 def random_data():
+    '''randomly generates one set of inputs to test'''
     request_size = np.random.randint(1,700)
     binary_size =  np.random.randint(1,700)
     requests = []
@@ -111,22 +119,63 @@ def random_data():
             requests.append(ADD)
     return requests, ''.join(bits)
 
+def check_sol(solone, soltwo):
+    '''checks the solution against the result of the algorithm'''
+    if (not solone) and (not soltwo):
+        return True
+    if (not solone) or (not soltwo):
+        return False
+    if len(solone)!=len(soltwo):
+        return False
+    for valone, valtwo in zip(solone,soltwo):
+        if valone!=valtwo:
+            return False
+    return True
 
 if __name__=="__main__":
+    print("manual test cases")
+    test_cases = [([ADD, COUNT],'001',[1]),
+                ([ADD, COUNT],'111',[0]),
+                ([ADD, COUNT],'100',[2]),
+                ([ADD, COUNT],'010',[2]),
+                ([ADD, COUNT],'000',[1]),
+                ([ADD, COUNT],'', [0]),
+                ([],'', []),
+                ]
+    all_passed = True
+    for tup in test_cases:
+        requests, bin_str = tup[0], tup[1]
+        res = solve_as_str(requests, bin_str, verbose=False)
+        if not check_sol(res, tup[2]):
+            all_passed =False
+            print("Failed:", tup)
+    if all_passed:
+        print("all manual test cases passed (using custom logic)")
+    all_passed = True
+    for tup in test_cases:
+        requests, bin_str = tup[0], tup[1]
+        res = solve_as_bin(requests, bin_str, verbose=False)
+        if not check_sol(res, tup[2]):
+            all_passed =False
+            print("Failed:", tup)
+    if all_passed:
+        print("all manual test cases passed (using python functions)")
+
+    print()
     test_dataset = []
-    for i in range(100):
+    for i in range(500):
         test_dataset.append( random_data())
     start = time.perf_counter()
     for requests, bin_str in test_dataset:
         solve_as_str(requests, bin_str, verbose=False)
     end = time.perf_counter()
-    print("time to run solve as str", (end - start))
+    print("time to run solve as str", round((end - start),2))
 
     start = time.perf_counter()
     for requests, bin_str in test_dataset:
         solve_as_bin(requests, bin_str, verbose=False)
     end = time.perf_counter()
-    print("time to run solve as bin", (end - start))
+    print("time to run solve as bin", round((end - start),2))
 
 
 
