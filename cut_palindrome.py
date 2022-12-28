@@ -16,6 +16,14 @@ For s = "", the output should be solution(s) = "".
 return: str
     can be empty string, can be original string, can be substring of original"""
 def palindrome(s: str) -> str:
+    '''checks if a string is a palindrome by checking the end characters one by one going into the middle'''
+    ssize = len(s)
+    for i in range(ssize//2):
+        if s[i] != s[ssize-i-1]:
+            return False
+    return True
+def palindrome_slow(s: str) -> str:
+    '''checks if a string is a palindrome by reversing it and check if the two equal'''
     ret = [' ' for x in range(len(s))]
     for i in range(len(s)):
         ret[i] = s[len(s)-i-1]
@@ -42,9 +50,25 @@ def cut_palindromes(s: str) -> str:
 def solution(s):
     return cut_palindromes(s)
 
-#print(solution("aaacodex"))
-#print(solution("aaacodocx"))
-#print(solution("codocx"))
-#print(solution("x"))
-#print(solution("xxxxxx"))
-print(solution("codedoc"))
+TEST_CASES = [("aaacodex", "codex"),
+            ("aaacodocx","x"),
+            ("codocx","x"),
+            ("x","x"),
+            ("xxx",""),
+            ("xxxx",""),
+            ("codedoc",""),
+            ("",""),
+            ("cocecoc",""),
+            ("abcdecoc","abcdecoc"),
+            ("bbbpalap", "")
+            ]
+
+if __name__=='__main__':
+    all_passed = True
+    for val, sol in TEST_CASES:
+        ret = solution(val)
+        if ret!=sol:
+            all_passed=False
+            print("Failed: \n\tvalue:", val,"\n\tsolution:" ,sol,"\n\tresult:", ret)
+    if all_passed:
+        print("passed all test cases")
