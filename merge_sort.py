@@ -1,4 +1,5 @@
-def rec(one, two):
+from typing import List
+def rec(one: List[int], two: List[int]) -> List[int]:
     three = []
     if len(one) >=2 or len(two)>=2:
         split = len(one)//2
@@ -25,28 +26,36 @@ def rec(one, two):
             w+=1
             e+=1
     return three
-def merge_sort(var):
+    
+def merge_sort(var: List[int]) -> List[int]:
+    '''implementing the merge sort algorithm
+    https://en.wikipedia.org/wiki/Merge_sort'''
+    if len(var) <=1:
+        return var
     split = len(var)//2
     sorted = rec(var[split:], var[:split])
     return sorted
 
 
 import numpy as np
-ct_tests = 100
+ct_tests = 1000
+failed = False
 for i in range(ct_tests):
-    test = list(np.random.randint(-10,10,7))
+    test = list(np.random.randint(-10,10,np.random.randint(0,10)))
     #test = [0, 7, 2, 4, 8, 0, 5]
     answer = test.copy()
     answer.sort()
     #print("input", test)
     #print("answer", answer)
     resp = merge_sort(test)
-    if resp==answer:
-        print("test", i, "correct")
-    else:
+
+    if resp!=answer:
+        failed=True
         print("----------")
         print("test", i, "false")
         print("input", test)
         print("answer", answer)
         print("result", resp)
         print("----------")
+if not failed:
+    print("all test cases passed")

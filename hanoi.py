@@ -89,7 +89,7 @@ def move(pegs: List[List[int]], ring: int, start: int, end: int, limit: List[int
         a = "the position in the list cannot be greater than indices in list\n"
         raise Exception('{a}pegs {pegs} ring {ring} start {start} end {end}')
 
-def check_descending(peg:List[int]):
+def check_descending(peg:List[int]) -> bool:
     '''checks if the pegs are stacked correctly'''
     if not peg:
         return False
