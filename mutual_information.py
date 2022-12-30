@@ -1,31 +1,32 @@
 from sklearn import metrics 
 import numpy as np
-metrics.normalized_mutual_info_score
+from typing import List
 import math
+def print_scores(mymi, npmi):
+    print("my mi\t\t", round(mymi,2))
+    print("mutual_info_score", round(npmi,2))
 
-def test1():
-    print("test1")
-    x, y = (0, 0, 1, 1, 0, 1, 1, 2, 2, 2), (3, 4, 5, 5, 3, 2, 2, 6, 6, 1)
-    print("my mi", mi(x, y))
-    print("mutual_info_score", metrics.mutual_info_score(x, y))
-
-def test2():
-    print("test2")
-    x, y = (0, 0,  0), (3, 3,3 )
-    print("my mi", mi(x, y))
-    print("mutual_info_score", metrics.mutual_info_score(x, y))
-def test3():
-    print("test3")
-    x, y = (0, 0,  0), (0, 0, 0)
-    print("my mi", mi(x, y))
-    print("mutual_info_score", metrics.mutual_info_score(x, y))
-
-
-
+TEST_CASES=[
+            ((0, 0, 1, 1, 0, 1, 1, 2, 2, 2), (3, 4, 5, 5, 3, 2, 2, 6, 6, 1)),
+            ((0, 0,  0), (3, 3,3 )),
+            ((0, 0,  0), (0, 0, 0)),
+            ((1, 1,  1), (1, 1, 1)),
+            ((0, 1,  0), (1, 0, 1)),
+            ((1, 1,  0), (1, 1, 1)),
+            ((1, 1,  0), (1, 1, 1)),
+            ((1), (1)),
+            ((0), (0)),
+            ]
 def manual_tests():
-    test1()
-    test2()
-    test3()
+    for x,y in TEST_CASES:
+        print()
+        print(x,y)
+        try:
+            mymi =mi(x, y)
+            npmi=metrics.mutual_info_score(x, y)
+        except Exception as e: 
+            print(e)
+        print_scores(mymi, npmi)
 
 def test_loop(tests = 20):
     print("automated test")
@@ -44,16 +45,16 @@ def test_loop(tests = 20):
     print("auto-generated inputs")
     print("acc %%%.1f" % (succ*100/tests))
 
-def cast_check_np_array(x):
+def cast_check_np_array(x) -> np.ndarray:
     if type(x) != np.ndarray:
         x_n = np.array(x)
     else:
         x_n = x
-    assert(len(x_n.shape) ==1), "arrays must be 1d you gave "+x_n.shape
-    assert(x_n.shape[0] > 0), "array must not be empty "+x_n.shape
+    assert(len(x_n.shape) ==1), "arrays must be 1d you gave "+str(x_n.shape)
+    assert(x_n.shape[0] > 0), "array must not be empty "+str(x_n.shape)
     return x_n
 
-def mi(xlist, ylist):
+def mi(xlist: np.ndarray[int], ylist: np.ndarray[int]) -> float:
     total = 0
     xlist = cast_check_np_array(xlist)
     ylist = cast_check_np_array(ylist)
@@ -73,10 +74,10 @@ def mi(xlist, ylist):
             bl = np.isin(indices_x, indices_y)
             sumbl = sum(bl)
             pxy = sumbl/size
-            if pxy > 0:
-                total +=pxy * math.log((pxy / (px*py)), math.e)
             if sumbl < 0:
                 print("sumbl< 0", sumbl)
+            if pxy > 0:
+                total +=pxy * math.log((pxy / (px*py)), math.e)
     return total
 
 if __name__=="__main__":
