@@ -1,3 +1,4 @@
+from typing import List, Tuple
 '''Given a N X N matrix Mat[N][N] of positive integers. There are only three possible moves from a cell (i, j) 
 
 (i+1, j)
@@ -20,9 +21,28 @@ test_cases = [([ [4, 2, 3, 4],
                 [0, 1, 2, 3],
                 [0, 2, 3, 4],
                 [100, 0, 1, 2] ],104),
+            ([[1,0,1,0],
+              [0,3,1,1],
+              [2,1,5,6],
+              [1,0,1,9],],18),
+            ([[3,0,1,0],
+              [0,3,1,1],
+              [3,1,1,0],
+              [1,3,1,2],],12),
+            ([[1,0,0,1],
+              [0,2,3,1],
+              [2,5,4,3],
+              [1,0,9,4],],9+5+3+1),
+            ([[1,0,3,0],
+              [0,3,1,1],
+              [3,1,4,0],
+              [1,3,1,2],],3+3+4+3),
             ]
 
-def longest_path(mat):
+def longest_path(mat: List[List[int]]) -> Tuple[int, List[int]]:
+    '''this solution calls a recursive function that steps through all the possible paths, 
+    saving all of them and looking for the largest paths. Its nice for using with a 
+    debugger to see how it works as it creates, compares, and saves paths'''
     paths = []
     distances = []
     assert type(mat)==list
@@ -40,7 +60,11 @@ def longest_path(mat):
     best_path = paths[distances.index(best_dist)]
     return best_dist, best_path
 
-def step(mat, path,N, row, col):
+def step(mat: List[List[int]], path: List[int],N: int, row: int, col: int) -> Tuple[int, List[int]]:
+    '''algorithm: first check if you are at the last row - if so, return.
+        if not at the last row - then try all three types of steps.
+    this could easily be modified to be faster by not tracking all the paths, and the code could be 
+    shorter by removing all the single use variables, but this makes it more fun to read with a debugger'''
     if row>=N-1:
         return sum(path),path
     paths = []
@@ -101,9 +125,17 @@ def MaximumPath(Mat):
 
 
 for test in test_cases:
-    print("my solution")
-    print(longest_path(test[0]))
-    print("internet solution")
-    MaximumPath(test[0])
-    print("answer", test[1])
-    print()
+    my_sol = longest_path(test[0])
+    int_sol = MaximumPath(test[0])
+    print("\nmy path found")
+    print(my_sol[1])
+    if my_sol[0]==int_sol==test[1]:
+        print("my solution and internet solution are correct")
+    elif  my_sol[0]!=test[1]:
+        print("Failed")
+        print("my sol", my_sol[0])
+        print("answer", test[1])
+    elif  int_sol!=test[1]:
+        print("Failed")
+        print("internet sol", int_sol)
+        print("answer", test[1])
