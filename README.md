@@ -27,6 +27,7 @@ runs slower, but works fine. good enough for now
 data science challenge about the stock exchange
 
 ### Description
+
 #### Task 1
 create a dataframe for each company that contains the row of data for one day each year that has the highest trading volume information.
 one-to-one of year-to-row
