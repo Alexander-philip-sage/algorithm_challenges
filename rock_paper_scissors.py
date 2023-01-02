@@ -1,5 +1,6 @@
 from random import random
 import sys, getopt
+import argparse
 
 def print_play(user,res,  char_to_word):
 	print("\nyou played:", char_to_word[user], '\ncomputer played:', char_to_word[res[1]])
@@ -52,9 +53,29 @@ def rps_trial(user):
 			return 1, op
 	else:
 		raise Exception("unknown result of options")
-	
-def main(argv):
-	
+
+
+if __name__ == "__main__":
+	parser = argparse.ArgumentParser(
+                    prog = 'Rock_Paper_Scissors',
+                    description = ('Run the program with your action and it will try to defeat you.\n\n'
+									'Interact with the program by passing an input or simulate a game by running test')
+                    #epilog = '', ##'Text at the bottom of help'
+					)
+	parser.add_argument("-i", "--input", type=str, help=('must be of either rock, paper, or scissors. ' 
+									'do not put \' or " around the input word. ' 
+									'accepts alternate game of cockroach, shoe, nuke'))
+	parser.add_argument("-t", "--test", action='store_true', help="runs trials of the game to see how it performs")
+
+	args = parser.parse_args()
+	if not args.input and not args.test:
+		parser.print_help()
+	if args.input and args.test:
+		parser.print_help()
+		print("\nError: cannot call both input and test simultaneously")
+		sys.exit()
+
+	##setup maps that are needed to interpret inputs
 	char_to_word = {'r':"rock", 's':'scissors', 'p':'paper'}
 	word_to_char = {}
 	for k in char_to_word.keys():
@@ -63,63 +84,25 @@ def main(argv):
 	paper_to_atom = {}
 	for k in atom_to_paper.keys():
 		paper_to_atom[atom_to_paper[k]] = k
-	
-	
-	try:
-		opts, args = getopt.getopt(argv,"hi:t",["input=", "help", "test"])
-	except getopt.GetoptError:
-		print('file: rock_paper_scissors.py')
-		print("for help run \npython rock_paper_scissors.py -h")
-		sys.exit(2)
-	for opt, arg in opts:
-		if opt in ('-h', "--help"):
-			print ('file: rock_paper_scissors.py')
-			print("Arguments:")
-			print("short\tlong\t\tdescription")
-			print("-h\t--help\t\tdisplay this help message")
-			print("-i\t--input\t\tinput must be of either rock, paper, or scissors")
-			print("\t\t\tdo not put ' or \" around the input word")
-			print("\t\t\taccepts alternate game of cockroach, shoe, nuke")
-			print("-t\t--testing\truns trials of the game to see how it performs")
-			sys.exit()
-		elif opt in ("-i", "--input"):
-			if arg in word_to_char.keys():
-				user = word_to_char[arg]
-				mode='single'
-			elif arg in atom_to_paper.keys():
-				mode ='atomic'
-				atom_user = arg
-			else:
-				raise Exception("option must be either rock, paper, or scissors")
-		elif opt in ("-t", "--test"):
-			print("Running tests on game")
-			mode = 'test'
+
+	if args.input:
+		if args.input in word_to_char.keys():
+			user = word_to_char[args.input]
+			res = rps_trial(user)
+			print_play(user,res,  char_to_word)
+			display_result(res)
+		elif args.input in atom_to_paper.keys():
+			paper_user = atom_to_paper[args.input]
+			res = rps_trial(word_to_char[paper_user])
+			print_play_atom(args.input, res,char_to_word, paper_to_atom )
+			display_result(res)
 		else:
-			print("incorrect input")
-			print("expected rock, paper or scissors")
-			print("use -h for guidance")
+			print("Error: input", args.input," not recognized\n")
+			parser.print_help()
 			sys.exit()
-			
-	if mode=='single':
-		res = rps_trial(user)
-		print_play(user,res,  char_to_word)
-		display_result(res)
-	elif mode=='atomic':
-		paper_user = atom_to_paper[atom_user]
-		res = rps_trial(word_to_char[paper_user])
-		print_play_atom(atom_user, res,char_to_word, paper_to_atom )
-		display_result(res)
-	elif mode=='test':
+	elif args.test:
 		for i in range(10):
 			user = random_choice()
 			res = rps_trial(user)
 			print_play(user,res,  char_to_word)
 			display_result( res)
-
-if __name__ == "__main__":
-	main(sys.argv[1:])
-
-
-
-
-
