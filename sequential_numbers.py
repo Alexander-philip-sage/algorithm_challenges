@@ -4,15 +4,20 @@ import numpy as np
 import datetime
 import matplotlib.pyplot as plt
 from typing import List
-def seq_numbers(arr: List[int]):
-    '''arr: unordered list'''
+def seq_numbers(arr: List[int]) -> int:
+    '''arr: unordered list
+    returns: either the int length of the sequence
+    algorithm: logs every unique element into a map. steps through the unique numbers and checks to see if any are part of a sequence. 
+        flags each value looked at so it isn't looked at again
+        worst case O(3n)'''
     if len(arr)<=1:
-        return False
+        return 0
     ##O(n)
     track = {x:0 for x in arr}
     final_left=0
     final_right=0
-    ##O(n)
+    ##O(n + k)
+    ##where k is the length of the sequence. worst case O(2n)
 
     for num in list(track.keys()):
         if track[num]==0:
@@ -25,19 +30,21 @@ def seq_numbers(arr: List[int]):
             while (right+1) in track.keys():
                 right +=1
                 track[right]=1
-        if (right -left)>(final_right-final_left):
-            final_left=left
-            final_right=right
+            if (right -left)>(final_right-final_left):
+                final_left=left
+                final_right=right
 
     if final_left==final_right:
-        return False
+        return 0
     else:
         return final_right - final_left+1
 
-def sort_seq_numbers(arr: List[int]):
-    '''arr: unordered list'''
+def sort_seq_numbers(arr: List[int]) -> int:
+    '''arr: unordered list
+    returns: either the int length of the sequence
+    algorithm: sorts the array, then steps through one by one, counting the sequential values'''
     if len(arr)<=1:
-        return False
+        return 0
     ##O(nlog(n))
     arr.sort()
     seq =0
@@ -60,7 +67,7 @@ def sort_seq_numbers(arr: List[int]):
     if seq >0:
         return seq +1
     else:
-        return False
+        return 0
 
 tests = [([1, 3,4,5,6, 9],4),
         ([x for x in range(3,7)],4),
@@ -72,24 +79,31 @@ tests = [([1, 3,4,5,6, 9],4),
         ([-6 ,-1  ,0  ,2  ,4  ,4  ,4  ,6  ,7],2),
         ([-2 ,-1, -9, -6,  9],2),
         ([7,6],2),
+        ([1],0),
         ([ 6  ,7 , 4,  5, -2 , 4],4),
+        ([1,3,5,7],0),
         ([6,-10,-7,-1,-5,-4,-3,5,3,3,7,3,9,2,-9,-3,-5,-1,-1,5,-10,-4,0,-8,7,2,7,8,8,7,0,5,5,-1,-8,-8,0,-4,5,9,0,-8,-8,8,8,4,3,-3,-4,-10,-4,-5,-9,-6,-9,-5,-1,-7,4,6,0,7,-3,5,-1,-7,-5],8)
         ]
 
 def manual_test(func):
     print("testing", print(func.__name__))
+    failed = False
     for inp, ans in tests:
         res = func(inp)
  
         if res!=ans:
+            failed = True
             print("**********")
             print(func.__name__)
             print("incorrect")
             print(inp)
             print("answer", ans)
             print("result", res)    
+    if not failed: 
+        print("all test cases passed")
 
 def scaling_tests(ct_tests, max_size):
+    '''tests the functions with different size arrays'''
     x = []
     n_logn_p_n = []
     hash_sol = []
@@ -125,14 +139,14 @@ def scaling_tests(ct_tests, max_size):
     plt.xlabel("array_size")
     ax=plt.gca()
     ax.legend()
-    
+    plt.savefig("sequential_numbers_scaling.png")
 
 if __name__=='__main__':
 
-    #manual_test(seq_numbers)
-    #manual_test(sort_seq_numbers)
-    scaling_tests(50,100000)
+    manual_test(seq_numbers)
+    manual_test(sort_seq_numbers)
+    scaling_tests(50,1_000_000)
 # %%
-test = [-10, -10, -10, -9, -9, -9, -8, -8, -8, -8, -8, -7, -7, -7, -6, -5, -5, -5, -5, -5, -4, -4, -4, -4, -4, -3, -3, -3, -3, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9]
-test.sort()
+#test = [-10, -10, -10, -9, -9, -9, -8, -8, -8, -8, -8, -7, -7, -7, -6, -5, -5, -5, -5, -5, -4, -4, -4, -4, -4, -3, -3, -3, -3, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9]
+#test.sort()
 #print(list(set(test)))
