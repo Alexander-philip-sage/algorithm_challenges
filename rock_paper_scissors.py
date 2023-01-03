@@ -1,4 +1,5 @@
 from random import random
+from typing import List, Tuple
 import sys, getopt
 import argparse
 
@@ -7,7 +8,7 @@ def print_play(user,res,  char_to_word):
 def print_play_atom(atom_user, res,char_to_word, paper_to_atom ):
 	print("\nyou played:", atom_user, '\ncomputer played:',  paper_to_atom[char_to_word[res[1]]])
 
-def display_result(res):
+def display_result(res:  Tuple[int,str]) -> None:
 	if res[0]==0:
 		print("You Won!")
 	elif res[0]==1:
@@ -15,7 +16,8 @@ def display_result(res):
 	elif res[0]==2:
 		print("You tied with the computer")
 		
-def random_choice():
+def random_choice() -> str:
+	'''randomly chooses a move'''
 	rand = random()
 	if rand <1/3:
 		return'r'
@@ -24,7 +26,7 @@ def random_choice():
 	else:
 		return 's'
 
-def rps_trial(user):
+def rps_trial(user: str) -> Tuple[int,str]:
 	'''user is a single letter input of the user's choice
 	either 'r' 'p' or 's'
 	returns 0-true or 1-false or 2-tie for victory or loss respectively
