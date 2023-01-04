@@ -1,6 +1,6 @@
 from random import random
 from typing import List, Tuple
-import sys, getopt
+import sys
 import argparse
 
 def print_play(user,res,  char_to_word):

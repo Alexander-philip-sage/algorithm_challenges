@@ -26,56 +26,65 @@ Brackets are only part of syntax of writing repeated substring.
 Input is always valid, so no need to check its validity'''
 
 
-def mydecompress(pattern):
+def mydecompress(pattern: str) -> str:
+    '''takes in a string in compressed format and returns the expanded version
+    algorithm: if its outside brackets, it adds the char to the decomp string. 
+                if its inside one set of brackets, then it adds the chars to a subpat.
+                if there is a set of brackets inside a set of brackets, then it calls 
+                itself recursively to expand the inner set'''
     #print("input",pattern)
     decomp = ''
     digit_str = ''
     subpat = ''
-    left = 0
-    right = 0
+    left_brackets = 0
+    right_brackets = 0
     left_ind = -1
+    ##left_brackets==0 indicates that you are not inside a subpattern
+    ##   left_brackets is the count of left brackets. right_brackets is the count of right brackets
+    ##left_ind is the left opening bracket of the subpattern
     for ind, letter in enumerate(pattern):
-        if left==0:
+        if left_brackets==0:
             if letter.isdigit():
                 digit_str+=letter
         if letter=='[':
             if digit_str:
                 digit = int(digit_str)
                 digit_str=''
-            left +=1
-            if left==1:
+            left_brackets +=1
+            if left_brackets==1:
                 left_ind=ind
-        if letter.isalpha():
-            if left==0:
+        elif letter.isalpha():
+            if left_brackets==0:
                 decomp+=letter
-            else:
+            elif left_brackets==1:
                 subpat += letter
-        if letter==']':
-            right+=1
-            if left==right:
-                if left>1:
+        elif letter==']':
+            right_brackets+=1
+            ##if opened and closed all the brackets
+            if left_brackets==right_brackets:
+                if left_brackets>1:
                     subpat=mydecompress(pattern[left_ind+1:ind])
-                    decomp += ''.join([subpat for i in range(digit)])
-                    subpat=''
-                elif left==1:
-                    decomp += ''.join([subpat for i in range(digit)])
-                    subpat=''
+                decomp += ''.join([subpat for i in range(digit)])
+                subpat=''
                 left_ind=-1
-                left=0
-                right=0
-
-
+                left_brackets=0
+                right_brackets=0
     return decomp+subpat
 
-test_cases = [('3[abc]4[ab]c','abcabcabcababababc'), ('2[3[a]b]','aaabaaab'), ('10[a]','aaaaaaaaaa'),
-            ('c4[a]','caaaa'), ('c2[a]c2[a]','caacaa')]
-for test in test_cases:
-    print()
-    resp = mydecompress(test[0])
-    print(test[0])
-    if test[1]==resp:
-        print("correct")
-    else:
-        print('wrong')
-        print("ans",test[1])
-        print("mine",resp)
+TEST_CASES = [('3[abc]4[ab]c','abcabcabcababababc'), ('2[3[a]b]','aaabaaab'), ('10[a]','aaaaaaaaaa'),
+            ('c4[a]','caaaa'), ('c2[a]c2[a]','caacaa'), ('2[2[1[t]a]b]c', 'tatabtatabc'),
+            ('2[c3[a]b]','caaabcaaab'),]
+
+if __name__=='__main__':
+    for test in TEST_CASES:
+        failed = False
+        resp = mydecompress(test[0])
+        if test[1]!=resp:
+            failed = True
+            print()
+            print('wrong')
+            print(test[0])
+            print("ans",test[1])
+            print("mine",resp)
+    if not failed:
+        print("all test cases passed")

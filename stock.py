@@ -22,8 +22,6 @@ def grab_highest_value(df, col: str):
     high_per_year = df[["year", col]].groupby("year").max()
     df_high = df.merge(high_per_year, how='inner', on=["year", col])
     df_high.sort_values('year', inplace=True, ignore_index=True)
-    if df_high.shape[0]>6:
-        print(df_high)
     return df_high
 
 if __name__=='__main__':
