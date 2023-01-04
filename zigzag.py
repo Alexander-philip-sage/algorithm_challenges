@@ -30,8 +30,8 @@ def check_rets(a, b):
     if len(a)!= len(b):
         print("answer wrong length")
         return False
-    for i, val in enumerate(a):
-        if val!= b[i]:
+    for aval, bval in zip(a, b):
+        if aval!= bval:
             print("values don't equal")
             return False
     return True
