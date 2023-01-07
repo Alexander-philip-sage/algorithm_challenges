@@ -35,14 +35,21 @@ class Graph():
             if len(following_courses_not_order)>0:
                 stack.append(node)
                 for following_course in following_courses_not_order:
-                    stack.append(following_course)
+                    if following_course in stack:
+                        self.dfs_s_order = []
+                        return
+                    else:
+                        stack.append(following_course)
             else:
                 self.dfs_s_order.append(node)
+
+        self.inverse_order(self.dfs_s_order)
     def DFS(self):
         all_nodes = list(self.graph.keys())
         for node in all_nodes:
             if self.ct_prerequisites[node]==0:
                 self.DFS_rec(node)
+        self.inverse_order(self.dfs_order)
     def DFS_rec(self, node: int):
         '''implemented with recursion'''
         for following_course in self.graph[node]:
@@ -60,11 +67,11 @@ class Graph():
         self.visited.add(node)
         self.dfs_order.append(node)
         return 1
-    def inverse_dfs(self):
-        for i in range(len(self.dfs_order)//2):
-            tmp = self.dfs_order[-1-i]
-            self.dfs_order[-1-i]=self.dfs_order[i]
-            self.dfs_order[i]=tmp
+    def inverse_order(self, order):
+        for i in range(len(order)//2):
+            tmp = order[-1-i]
+            order[-1-i]=order[i]
+            order[i]=tmp
     def BFS(self):
         '''implemented with queues'''
         all_nodes = list(self.graph.keys())
@@ -92,40 +99,44 @@ class Graph():
         for following_course in self.graph[node]:
             pass
 
-def check_correct(graph: Graph, order: List[int]):
-    node_order = {order[i]:i for i in range(len(order)) }
-    for node in order:
-        for following_course in graph.graph[node]:
-            if node_order[node] > node_order[following_course]:
-                return False
-    return True 
-if __name__=='__main__':
+    def check_correct(self, order: List[int]):
+        node_order = {order[i]:i for i in range(len(order)) }
+        for node in order:
+            for following_course in self.graph[node]:
+                if node_order[node] > node_order[following_course]:
+                    return False
+        return True 
+
+def test_func(mode:str):
     passed = True
     for test in NODE_DATA:
         graph = Graph()
         for node in test:
             graph.add_node(node)
-        graph.DFS()
-        graph.inverse_dfs()
-        if not check_correct(graph, graph.dfs_order):
+        if mode=='dfs_recursive':
+            graph.DFS()
+            order = graph.dfs_order
+        elif mode=='dfs_stack':
+            graph.DFS_stack()
+            order = graph.dfs_s_order
+        elif mode=='bfs':
+            graph.BFS()
+            order = graph.bfs_order
+        if not graph.check_correct(order):
             passed = False
             print("\ntest")
             print(test)
-            print("order of classes DFS",graph.dfs_order)
+            print("order of classes ", mode,order)
             print("prerequisite count", graph.ct_prerequisites)
-        graph.DFS_stack()
-        print(test)
-        print(graph.dfs_s_order)
-        graph.BFS()
-        if not check_correct(graph, graph.bfs_order):
-            passed = False
-            print("\ntest")
-            print(test)
-            print("order of classes BFS",graph.bfs_order)
-            print("prerequisite count", graph.ct_prerequisites)
-
-
-
     if passed:
-        print("passed all tests")
+        print(mode, "passed all tests")
+
+
+if __name__=='__main__':
+    
+    test_func( 'bfs')
+    test_func( 'dfs_recursive')
+    test_func('dfs_stack')
+
+
         
