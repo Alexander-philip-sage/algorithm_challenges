@@ -24,3 +24,4 @@ ML Engineer assessment instructions:
 2. Activate the venv
 3. launch the app `uvicorn endpoint:app --reload`
 4. Open a browser and go to http://127.0.0.1:8000/docs
+5. Each of the four models are deployed as seperate endpoints to hit. Data is passed in as a list in the body. All four models are loaded when the app starts and are waiting in memory ready for use. 
