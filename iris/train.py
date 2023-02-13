@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from typing import Tuple
+import pickle
 # We will fix a random SEED for reproducibility:
 SEED = 11
 np.random.seed(SEED)
@@ -61,22 +62,25 @@ def plot_classes(iris_df: pd.core.frame.DataFrame, xlabel:str, ylabel:str, fig_n
 def plot_features_classes(iris_df: pd.core.frame.DataFrame):
   '''plots the relationship between how the features impact 
   the classes for two combinations'''
+  print("plotting and saving plot of features for each class")
   ylabel= 'petal width (cm)'
   xlabel = 'petal length (cm)'
-  plot_classes(iris_df, xlabel, ylabel, (xlabel+" vs "+ylabel).replace("(",''))
+  plot_classes(iris_df, xlabel, ylabel, (xlabel+" vs "+ylabel).replace("(",'').replace(")", '').replace(" ", '_'))
 
   """the sepal width and length alone aren't good at seperating the versicolor and virginica. These two classes are also the most mixed with the petal width and length. They likely will result in the most errors in prediction. """
 
   ylabel= 'sepal width (cm)'
   xlabel = 'sepal length (cm)'
-  plot_classes(iris_df, xlabel, ylabel, (xlabel+" vs "+ylabel).replace("(",''))
+  plot_classes(iris_df, xlabel, ylabel, (xlabel+" vs "+ylabel).replace("(",'').replace(")", '').replace(" ", '_'))
 
 """# Predictive Models
 KNN, Random Forest Classifier, SVM classifier, and a logistic regression classifier
 """
 
-def split_dataset(iris_df: pd.core.frame.DataFrame) -> Tuple[: np.ndarray]:
-  """ I prefer to split into three categories. A technique that tries to avoid the bias introduced by choosing the right hyperparameters (like model architecture or parameters) based on the accuracy of the test set."""
+def split_dataset(iris_df: pd.core.frame.DataFrame) -> Tuple[ np.ndarray]:
+  """ I prefer to split into three categories. A technique that tries to avoid 
+  the bias introduced by choosing the right hyperparameters 
+  (like model architecture or parameters) based on the accuracy of the test set."""
 
   test_split = 0.4
   x_data = iris_df[['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)',
@@ -84,14 +88,14 @@ def split_dataset(iris_df: pd.core.frame.DataFrame) -> Tuple[: np.ndarray]:
   y_data = [int(x) for x in iris_df.target.to_list()]
   X_train, X_t, y_train, y_t = train_test_split(x_data, y_data, test_size=test_split, random_state=SEED)
   X_test, X_dev, y_test, y_dev = train_test_split(X_t, y_t, test_size=0.5, random_state=SEED)
-  return X_train, y_train, X_test, X_dev, y_test, y_dev 
+  return X_train, y_train, X_dev, y_dev,X_test, y_test  
 
 
 """## KNN"""
 
-def grid_search_all(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, X_dev: np.ndarray):
+def grid_search_all(X_train: np.ndarray, y_train: np.ndarray, X_dev: np.ndarray, y_dev: np.ndarray):
   '''performs a grid search on three of the algorithms to look for the 
-  parameters that fit the dataset the best. comments illistrate the analysis'''
+  parameters that fit the dataset the best. see jupyter notebook for the analysis'''
   knn_scores = []
   for k in [1,3,5,7,8,40]:
     for w in ['uniform', 'distance']:
@@ -100,14 +104,8 @@ def grid_search_all(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray
       score =neigh.score(X_dev, y_dev)
       knn_scores.append({"n_neighbors":k, "weights":w, "score":score, "ct_train":len(X_train), "ct_dev":len(X_dev)})
   knn_scores_df = pd.DataFrame(knn_scores)
-  knn_scores_df.sort_values(by='score', ascending=False)
+  knn_scores_df.sort_values(by='score', ascending=False, ignore_index=True, inplace=True)
   knn_scores_df.to_csv("knn_scores_df.csv")
-  """Thats really weird. I've never seen the same score with such 
-  different parameters in real data. I like the idea of the 'distance' 
-  weight in the classifier logically based on the graphs I made in data exploration. 
-  Valuing too many points too far out equally is not logical, and it does fail on the 
-  extreme when we go to 40 data points. I'll stick with k=3 and weights=distance, 
-  as a relatively random choice"""
 
   """## Random Forest Classifier"""
 
@@ -124,12 +122,10 @@ def grid_search_all(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray
             params.update({"score":score, "ct_train":len(X_train), "ct_dev":len(X_dev)})
             rfc_data.append(params)
   rfc_df= pd.DataFrame(rfc_data)
-  rfc_df= rfc_df.sort_values(by='score', ascending=False)
+  rfc_df.sort_values(by='score', ascending=False, ignore_index=True, inplace=True)
 
   rfc_df.to_csv("random_forest_classifier_df.csv")
 
-  """again a lot of the params are tied for first. So I'll take some of the 
-  smaller numbers to keep the model simpler."""
 
   """## SVM"""
   svm_data = []
@@ -137,14 +133,17 @@ def grid_search_all(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray
     if kernel in ('rbf', 'poly','sigmoid'):
       for gamma in ['scale', 'auto']:
         clf = make_pipeline(StandardScaler(), SVC(kernel=kernel,gamma=gamma, random_state=SEED))
+        clf.fit(X_train, y_train)
+        score=clf.score(X_dev, y_dev)         
         svm_data.append({"kernel":kernel, "gamma":gamma,"score":score, "ct_train":len(X_train), "ct_dev":len(X_dev) })
     else:
         clf = make_pipeline(StandardScaler(), SVC(kernel=kernel,random_state=SEED))
+        clf.fit(X_train, y_train)
+        score=clf.score(X_dev, y_dev)         
         svm_data.append({"kernel":kernel, "gamma":gamma,"score":score, "ct_train":len(X_train), "ct_dev":len(X_dev) })
   svm_df= pd.DataFrame(svm_data)
-  svm_df= svm_df.sort_values(by='score', ascending=False)
+  svm_df.sort_values(by='score', ascending=False, ignore_index=True, inplace=True)
   svm_df.to_csv("svm_classifier_df.csv")
-  '''all the options in the svm produce the same result so I'll choose the simpler kernel, the linear kernel'''
   
   """## Logistic Regression
 
@@ -152,14 +151,15 @@ def grid_search_all(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray
   of grid searching through hyperparameters
   """
 
-def train_final_models(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, X_dev: np.ndarray, y_test: np.ndarray, y_dev: np.ndarray ):
+def train_final_models(X_train: np.ndarray, y_train: np.ndarray, X_dev: np.ndarray, y_dev: np.ndarray, X_test: np.ndarray, y_test: np.ndarray ):
   '''parameters for each model are fixed based on 
   results from grid search for each algorithm'''
-  neigh = KNeighborsClassifier(n_neighbors=3, weights='distance')
+  neigh = KNeighborsClassifier(n_neighbors=8, weights='distance')
   neigh.fit(X_train, y_train)
   score_train =neigh.score(X_train, y_train)
   score_dev =neigh.score(X_dev, y_dev)
   score_test =neigh.score(X_test, y_test)
+  print("\nKNN Model")
   print("train score", score_train)
   print("dev score", score_dev)
   print("test score", score_test)
@@ -169,6 +169,7 @@ def train_final_models(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndar
   score_train=rfc_clf.score(X_train, y_train)
   score_dev=rfc_clf.score(X_dev, y_dev)
   score_test=rfc_clf.score(X_test, y_test)
+  print("\nRandom Forest Classifier")
   print("train score", score_train)
   print("dev score", score_dev)
   print("test score", score_test)
@@ -177,6 +178,7 @@ def train_final_models(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndar
   svm_clf.fit(X_train, y_train)
   score_dev=svm_clf.score(X_dev, y_dev)
   score_test=svm_clf.score(X_test, y_test)
+  print("\nSVM model")
   print("train score", score_train)
   print("dev score", score_dev)
   print("test score", score_test)
@@ -185,16 +187,29 @@ def train_final_models(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndar
   lr_clf.fit(X_train, y_train)
   score_dev=lr_clf.score(X_dev, y_dev)
   score_test=lr_clf.score(X_test, y_test)
+  print("\nLinear Regression model")
   print("train score", score_train)
   print("dev score", score_dev)
   print("test score", score_test)
 
   return neigh, rfc_clf, svm_clf, lr_clf
 
+    
+def pickle_models(neigh, rfc_clf, svm_clf, lr_clf):
+    with open("knn.pickle", 'wb') as fileobj:
+        pickle.dump(neigh, fileobj)
+    with open("random_forest_clf.pickle", 'wb') as fileobj:
+        pickle.dump(rfc_clf, fileobj)
+    with open("svm_clf.pickle", 'wb') as fileobj:
+        pickle.dump(svm_clf, fileobj)
+    with open("linear_regression_clf.pickle", 'wb') as fileobj:
+        pickle.dump(lr_clf, fileobj)
+
 if __name__=='__main__':
   iris_ds = load_iris()
   iris_df=build_df(iris_ds)
   plot_features_classes(iris_df)
-  X_train, y_train, X_test, X_dev, y_test, y_dev =split_dataset(iris_df)
-
-  neigh, rfc_clf, svm_clf, lr_clf = train_final_models()
+  X_train, y_train, X_dev, y_dev,X_test, y_test   =split_dataset(iris_df)
+  #grid_search_all(X_train, y_train, X_dev, y_dev)
+  neigh, rfc_clf, svm_clf, lr_clf = train_final_models(X_train, y_train, X_dev, y_dev,X_test, y_test  )
+  #pickle_models(neigh, rfc_clf, svm_clf, lr_clf)
