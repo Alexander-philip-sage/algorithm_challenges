@@ -7,14 +7,19 @@ My linkedIn profile, is again another more convincing list of my technical skill
 	https://www.linkedin.com/in/alexanderpsage/
 
 # Challenges
+
 Note: The challenges listed in this description are likely a subset of all those solved in this repo. I don't update this README super often because I don't see the point in catalogging everything. Documentation is worth while only when it provides value.  
+
+## Free Algorithm Challenges
+
+[Interview Kickstart](https://www.interviewkickstart.com/problems)
 
 ## Rock paper scissors 
 game with optional adaptation of nuke, cockroach, shoe
 
 A recruiter asked for it, so here it is. 
 
-## mutual_information
+## Mutual_information
 write the mutual information algorithm
 
 ### Testing
@@ -23,7 +28,7 @@ Use the mutual information algorithm that already exists in scikit learn
 ### Result
 runs slower, but works fine. good enough for now
 
-## stock
+## Stock
 data science challenge about the stock exchange
 
 ### Description
@@ -41,7 +46,7 @@ one-to-many of year-to-row
 * One file for each company.
 * every day has one row with: volume, date, high, low, close, open
 
-## syntax
+## Syntax
 going through python syntax for validation
 
 ### Contains
