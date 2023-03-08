@@ -16,6 +16,8 @@ Note: The challenges listed in this description are likely a subset of all those
 
 [Google Interview Prep](https://techdevguide.withgoogle.com/resources/topics/interview-prep/?no-filter=true#!)
 
+[Google Coding Competitions](https://codingcompetitions.withgoogle.com/codejam/archive)
+
 ## Rock paper scissors 
 game with optional adaptation of nuke, cockroach, shoe
 
