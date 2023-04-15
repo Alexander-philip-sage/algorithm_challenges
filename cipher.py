@@ -78,7 +78,6 @@ class Challenge():
         return False
 
 def check_collisions(challenges:str)->str:
-    ct_challenges = int(challenges.split("\n")[0])    
     stage = ''
     cipher = []
     word_i = 0
