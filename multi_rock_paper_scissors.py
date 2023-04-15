@@ -11,15 +11,14 @@ Output
 For each test case, output one line containing Case #x : y, where x is the test case number (starting from 1) and y is the minimum number of changes that are required such that no two neighbors end up with the same choice'''
 
 
-"""8
+"""7
 PRSSP
 RR
 RRR
 RRRR
 RRRRR
 RRRRRRR
-RSPRPSPRS
-"""
+RSPRPSPRS"""
 """
 2
 1
