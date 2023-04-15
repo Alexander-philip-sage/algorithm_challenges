@@ -76,6 +76,14 @@ def trap_google(height: List[int]) -> int:
             right_index -= 1
     return output
 
+def lakes3(height):
+    left_index, right_index = 0, len(height) - 1
+    left_max, right_max = 0, 0
+    output = 0
+    while left_index < right_index:
+        if height[left_index]<left_max and height[left_index]<right_max:
+            output+= (left_max- height[left_index]) if left_max < right_max else (right_max- height[left_index])
+            left_index+=1
 
 TEST_CASES = [
                 ##left cliff edge, right cliff edge, underwater hill under the lake
@@ -113,7 +121,8 @@ TEST_CASES = [
                 ([1,2,1,3],1),
                 ##perfectly symetric, ramp up, then lake, ramp down
                 ([1,2,1,2,1],1),
-
+                ##steep cliff
+                ([1,10,1,2],1)
                 ]
 
 def test_algorithm(alg):

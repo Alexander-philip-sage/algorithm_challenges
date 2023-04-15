@@ -58,6 +58,7 @@ def plot_classes(iris_df: pd.core.frame.DataFrame, xlabel:str, ylabel:str, fig_n
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
   plt.savefig(fig_name)
+  plt.close()
 
 def plot_features_classes(iris_df: pd.core.frame.DataFrame):
   '''plots the relationship between how the features impact 

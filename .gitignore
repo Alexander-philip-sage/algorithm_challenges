@@ -6,6 +6,10 @@
 *.user
 *.userosscache
 *.sln.docstates
+*Magill.dll
+py39
+shotover_challenge/SageSol.zip
+shotover_challenge/log.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
