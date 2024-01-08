@@ -85,6 +85,30 @@ def lakes3(height):
             output+= (left_max- height[left_index]) if left_max < right_max else (right_max- height[left_index])
             left_index+=1
 
+def lakes4(height):
+  '''written from memory of how to solve it. came out a little different from the 
+  google answer since its been a year, but still passes all test cases'''
+  i = 0
+  j = len(height)-1
+  lh=0
+  rh=0
+  water =0
+  while i<=j:
+    if rh<lh:
+      if height[j] <rh:
+        water +=rh-height[j]
+      else:
+        rh = height[j]
+      j-=1
+    else:
+      if height[i]<lh:
+        water += lh-height[i]
+      else:
+        lh = height[i]
+      i+=1
+    #print("rh", rh, "lh",lh,"water", water, "i", i, "j", j)
+  return water
+
 TEST_CASES = [
                 ##left cliff edge, right cliff edge, underwater hill under the lake
                 ([3,1,2,1,3],5),
